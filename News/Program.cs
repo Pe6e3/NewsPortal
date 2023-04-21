@@ -1,10 +1,23 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using News.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<NewsContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NewsContext") ?? throw new InvalidOperationException("Connection string 'NewsContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Добавили сервис Аутентификации
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+    });
 
 var app = builder.Build();
 
@@ -16,11 +29,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();    
 app.UseAuthorization();
 
 
