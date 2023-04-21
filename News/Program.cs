@@ -9,8 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<NewsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NewsContext") ?? throw new InvalidOperationException("Connection string 'NewsContext' not found.")));
 
+
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 // Добавили сервис Аутентификации
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

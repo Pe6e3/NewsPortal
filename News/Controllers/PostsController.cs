@@ -48,7 +48,7 @@ namespace News.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_db.Set<Category>(), "CatehoryId", "CatehoryId");
+            ViewBag.Category = _db.Category;
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace News.Controllers
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_db.Set<Category>(), "CatehoryId", "CatehoryId", post.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_db.Category, "CatehoryId", "CatehoryId", post.CategoryId);
             return View(post);
         }
 
@@ -82,7 +82,7 @@ namespace News.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_db.Set<Category>(), "CatehoryId", "CatehoryId", post.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_db.Category, "CatehoryId", "CatehoryId", post.CategoryId);
             return View(post);
         }
 
@@ -118,7 +118,7 @@ namespace News.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_db.Set<Category>(), "CatehoryId", "CatehoryId", post.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_db.Category, "CatehoryId", "CatehoryId", post.CategoryId);
             return View(post);
         }
 

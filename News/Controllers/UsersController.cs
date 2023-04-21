@@ -10,89 +10,90 @@ using News.Models;
 
 namespace News.Controllers
 {
-    public class CategoriesController : Controller
+    public class UsersController : Controller
     {
         private readonly NewsContext _db;
 
-        public CategoriesController(NewsContext context)
+        public UsersController(NewsContext context)
         {
             _db = context;
-            ViewBag.Users = _db.Users;
         }
 
-        // GET: Categories
+        // GET: Users
         public async Task<IActionResult> Index()
         {
-
-            return _db.Category != null ? 
-                          View(await _db.Category.ToListAsync()) :
-                          Problem("Entity set 'NewsContext.Category'  is null.");
+            var newsContext = _db.Users.Include(u => u.Role);
+            return View(await newsContext.ToListAsync());
         }
 
-        // GET: Categories/Details/5
+        // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _db.Category == null)
+            if (id == null || _db.Users == null)
             {
                 return NotFound();
             }
 
-            var category = await _db.Category
-                .FirstOrDefaultAsync(m => m.CatehoryId == id);
-            if (category == null)
+            var user = await _db.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(user);
         }
 
-        // GET: Categories/Create
+        // GET: Users/Create
         public IActionResult Create()
         {
+            ViewData["RoleId"] = new SelectList(_db.Roles, "RoleId", "RoleId");
             return View();
         }
 
-        // POST: Categories/Create
+        // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CatehoryId,CategoryName")] Category category)
+        public async Task<IActionResult> Create([Bind("UserId,UserName,Password,RoleId")] User user)
         {
             if (ModelState.IsValid)
             {
-                _db.Add(category);
+                _db.Add(user);
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["RoleId"] = new SelectList(_db.Roles, "RoleId", "RoleId", user.RoleId);
+            return View(user);
         }
 
-        // GET: Categories/Edit/5
+        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _db.Category == null)
+            if (id == null || _db.Users == null)
             {
                 return NotFound();
             }
 
-            var category = await _db.Category.FindAsync(id);
-            if (category == null)
+            var user = await _db.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["RoleId"] = new SelectList(_db.Roles, "RoleId", "RoleId", user.RoleId);
+            return View(user);
         }
 
-        // POST: Categories/Edit/5
+        // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CatehoryId,CategoryName")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,UserName,Password,RoleId")] User user)
         {
-            if (id != category.CatehoryId)
+            if (id != user.UserId)
             {
                 return NotFound();
             }
@@ -101,12 +102,12 @@ namespace News.Controllers
             {
                 try
                 {
-                    _db.Update(category);
+                    _db.Update(user);
                     await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.CatehoryId))
+                    if (!UserExists(user.UserId))
                     {
                         return NotFound();
                     }
@@ -117,49 +118,51 @@ namespace News.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["RoleId"] = new SelectList(_db.Roles, "RoleId", "RoleId", user.RoleId);
+            return View(user);
         }
 
-        // GET: Categories/Delete/5
+        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _db.Category == null)
+            if (id == null || _db.Users == null)
             {
                 return NotFound();
             }
 
-            var category = await _db.Category
-                .FirstOrDefaultAsync(m => m.CatehoryId == id);
-            if (category == null)
+            var user = await _db.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(user);
         }
 
-        // POST: Categories/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_db.Category == null)
+            if (_db.Users == null)
             {
-                return Problem("Entity set 'NewsContext.Category'  is null.");
+                return Problem("Entity set 'NewsContext.Users'  is null.");
             }
-            var category = await _db.Category.FindAsync(id);
-            if (category != null)
+            var user = await _db.Users.FindAsync(id);
+            if (user != null)
             {
-                _db.Category.Remove(category);
+                _db.Users.Remove(user);
             }
             
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool UserExists(int id)
         {
-          return (_db.Category?.Any(e => e.CatehoryId == id)).GetValueOrDefault();
+          return (_db.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
     }
 }

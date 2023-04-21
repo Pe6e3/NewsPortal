@@ -15,13 +15,20 @@ public class AccountController : Controller
     public AccountController(NewsContext db)
     {
         _db = db;
+        ViewBag.Users = _db.Users;
     }
-
 
     [HttpGet]
     public IActionResult Login()
     {
         return View();
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var users = _db.Users
+            .Include(r => r.Role);
+        return View(await users.ToListAsync());
     }
 
     [HttpPost]

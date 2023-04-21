@@ -37,10 +37,10 @@
                 @Html.DisplayFor(modelItem => item.PostBody)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.CatehoryId)
+                @Html.DisplayFor(modelItem => item.Category.CategoryName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PostDate)
+                @item.PostDate.ToString("dd.MM.yy HH:mm")
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.PostId">Edit</a> |
