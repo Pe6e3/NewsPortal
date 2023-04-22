@@ -1,0 +1,64 @@
+﻿@model IEnumerable<News.Models.Post>
+
+@{
+    ViewData["Title"] = "Портал новостей";
+}
+
+<h1>Портал новостей</h1>
+<hr />
+<br />
+
+@foreach (Category category in ViewBag.Categories)
+{
+    @*// Проверяем наличие постов в данной категории*@
+    var postsInCategory = Model.Where(post => post.Category.CategoryName == category.CategoryName);
+    if (postsInCategory.Any())
+    {
+        <h2>@category.CategoryName</h2>
+
+        @*// Проходим по постам, которые относятся к данной категории*@
+        <div style="display:flex; flex-wrap:wrap">
+            @foreach (Post post in postsInCategory)
+            {
+
+                <a asp-action="Details" asp-route-id="@post.PostId" class="card m-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => post.PostTitle)</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@post.PostDate.ToString("dd.MM.yy HH:mm")</h6>
+                        <p class="card-text">@Html.DisplayFor(modelItem => post.PostBody)</p>
+                    </div>
+                </a>
+            }
+        </div>
+
+
+
+    }
+}
+
+<style>
+    .card-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+    }
+
+    .card {
+        background-color: antiquewhite;
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+        transition: 0.5s;
+    }
+
+        a :hover {
+            transform: scale(1.08);
+            transition: 0.2s;
+            color: black;
+            background-color: blanchedalmond;
+        }
+</style>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,20 @@ namespace News.Controllers
             _db = context;
         }
 
+
+        public async Task<IActionResult> MainPage()
+        {
+            ViewBag.Categories = _db.Category;
+            var postList = _db.Post
+                .Include(c => c.Category);
+
+            return View(await postList.ToListAsync());
+        }
+
+
         // GET: Posts
+
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
             var newsContext = _db.Post.Include(p => p.Category);

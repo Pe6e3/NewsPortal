@@ -46,7 +46,7 @@ public class AccountController : Controller
                 await Authenticate(user); // аутентификация
 
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("MainPage", "Posts");
             }
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
         }
@@ -71,12 +71,12 @@ public class AccountController : Controller
             if (user == null)
             {
                 Role role = _db.Roles.FirstOrDefault(r => r.RoleName == "user");
-                user = new User { UserName = model.UserName, Password = model.Password, RoleId = 2, Role = role };
+                user = new User { UserName = model.UserName, Password = model.Password, RoleId = role.RoleId, Role = role };
 
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
                 await Authenticate(user);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("MainPage", "Posts");
             }
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
         }
@@ -92,7 +92,7 @@ public class AccountController : Controller
         var claims = new List<Claim>
        {
            new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
-               new Claim(ClaimsIdentity.DefaultNameClaimType, user.Role?.RoleName)
+           new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.RoleName)
        };
         ClaimsIdentity id = new ClaimsIdentity(
             claims,

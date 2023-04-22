@@ -21,38 +21,28 @@
                     <ul class="navbar-nav flex-grow-1">
 
 
-
-                      
-
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
-                        {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Админка</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="Index">Посты</a>
                         </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Категории</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="MainPage">Главная страница</a>
+                        </li>
 
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Категории</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Все пользователи</a>
+                        </li>
+
 
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="MainPage">Главная страница</a>
-                            </li>
-
-                        
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Все пользователи</a>
-                            </li>
-
-                          
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Выход (@User.Identity.Name)</a>
                             </li>
-
                         }
                         else
                         {
@@ -79,6 +69,7 @@
                     @RenderBody()
                 </main>
             </div>
+            @await Html.PartialAsync("UsersListPartial")
         </div>
     </div>
 
